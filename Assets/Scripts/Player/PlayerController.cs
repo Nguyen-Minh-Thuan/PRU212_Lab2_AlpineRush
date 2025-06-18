@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,8 +11,11 @@ public class PlayerController : MonoBehaviour
 	public float _maxSpeed = 10f;
 	public float _acceleration = 2f;
 	public float _friction = 0.98f;
+    public float _stageSpeed = 100f;
+    public float _flightSpeed = 2f;
+    private float _originalMoveSpeed;
 
-	[Header("Leaning Settings")]
+    [Header("Leaning Settings")]
 	public float _maxLeanAngle = 30f;
 	public float _leanSmoothSpeed = 8f;
 
@@ -23,19 +28,24 @@ public class PlayerController : MonoBehaviour
 	private float _currentSpeed;
 	private float _moveX;
 	private Vector2 _moveDirection = Vector2.down; // Start moving downward
+    private bool _isVulnerable = true; // Player vulnerability state
+    private float _playerPoints = 0f; // Player points, can be used for scoring or other purposes
 
-	private InputAction _moveAction;
+    private InputAction _moveAction;
+    private InputAction _accelerate;
 
 	void Awake()
 	{
 		_moveAction = new InputAction(type: InputActionType.Value, binding: "<Gamepad>/leftStick/x");
-		_moveAction.AddCompositeBinding("1DAxis")
-			.With("Negative", "<Keyboard>/a")
-			.With("Negative", "<Keyboard>/leftArrow")
-			.With("Positive", "<Keyboard>/d")
-			.With("Positive", "<Keyboard>/rightArrow");
+        _moveAction.AddCompositeBinding("1DAxis")
+            .With("Negative", "<Keyboard>/a")
+            .With("Negative", "<Keyboard>/leftArrow")
+            .With("Positive", "<Keyboard>/d")
+            .With("Positive", "<Keyboard>/rightArrow");
 		_moveAction.Enable();
-	}
+        _accelerate = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/space");
+        _accelerate.Enable();
+    }
 
 	void Start()
 	{
@@ -45,6 +55,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        var getAccelerate = _accelerate.ReadValue<float>();
+        if (getAccelerate == 1f && _currentSpeed < _maxSpeed)
+            _moveSpeed += 0.1f;
+        else if(_currentSpeed > _stageSpeed)
+            _moveSpeed -= 0.1f;
+
         _moveX = _moveAction.ReadValue<float>();
 
         // Calculate turn speed based on current speed (inertia effect)
@@ -91,7 +107,7 @@ public class PlayerController : MonoBehaviour
         float _targetAngle = Mathf.Atan2(_moveDirection.y, _moveDirection.x) * Mathf.Rad2Deg + 90f;
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
-
+        Debug.Log($"{_currentSpeed}");
     }
 
 
@@ -100,4 +116,44 @@ public class PlayerController : MonoBehaviour
 		_moveAction.Disable();
 		_moveAction.Dispose();
 	}
+
+    public void SlowDown(float slowPercent)
+    {
+        _moveSpeed *= (1f - slowPercent);
+    }
+
+    public void TakeFlight()
+    {
+        _isVulnerable = false;
+        _originalMoveSpeed = _moveSpeed; // Store the original speed
+        _moveSpeed *= _flightSpeed; // Increase speed for flight
+        Debug.Log($"Is Vulnerable: {_isVulnerable}");
+    }
+
+    public void Land()
+    {
+        _moveSpeed = _originalMoveSpeed; // Restore the original speed
+        _isVulnerable = true;
+        Debug.Log($"Is Vulnerable: {_isVulnerable}");
+    }
+
+    public float GetPlayerPoints()
+    {
+        return _playerPoints;
+    }
+
+    public void AddPoints(int v)
+    {
+        _playerPoints += v;
+        Debug.Log($"Player Points: {_playerPoints}");
+    }
+
+    public bool IsVulnerable()
+    {
+        return _isVulnerable;
+    }
+
+    
+
+
 }

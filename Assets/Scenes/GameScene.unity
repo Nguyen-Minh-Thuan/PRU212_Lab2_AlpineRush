@@ -297,9 +297,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 50
   _turnSpeed: 50
-  _maxSpeed: 1000
+  _maxSpeed: 70
   _acceleration: 2
   _friction: 0.98
+  _stageSpeed: 60
+  _flightSpeed: 2
   _maxLeanAngle: 30
   _leanSmoothSpeed: 8
   _minTurnSpeed: 120
@@ -518,7 +520,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
