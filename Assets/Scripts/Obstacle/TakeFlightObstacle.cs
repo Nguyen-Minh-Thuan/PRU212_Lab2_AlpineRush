@@ -23,10 +23,8 @@ public class TakeFlightObstacle : MonoBehaviour
     private IEnumerator HandleFlight(PlayerController playerController)
     {
         playerController.TakeFlight();
-        Debug.Log("Taking flight for " + _flightDuration + " seconds.");
         yield return new WaitForSeconds(_flightDuration);
         playerController.Land();
-        Debug.Log("Landing after " + _flightDuration + " seconds.");
     }
 
 }

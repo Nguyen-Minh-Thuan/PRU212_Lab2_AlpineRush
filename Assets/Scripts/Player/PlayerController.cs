@@ -1,3 +1,4 @@
+using Assets.Scripts.GameController;
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,10 +7,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
 	[Header("Movement Settings")]
-	public float _moveSpeed = 50f;
+	public float _moveSpeed = 37f;
 	public float _turnSpeed = 120f; // Degrees per second
-	public float _maxSpeed = 10f;
-	public float _acceleration = 2f;
+	public float _maxSpeed;
+    public float _acceleration = 2f;
 	public float _friction = 0.98f;
     public float _stageSpeed = 100f;
     public float _flightSpeed = 2f;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
 	private Vector2 _moveDirection = Vector2.down; // Start moving downward
     private bool _isVulnerable = true; // Player vulnerability state
     private float _playerPoints = 0f; // Player points, can be used for scoring or other purposes
+    private GameConfiguration _gameConfiguration;
 
     private InputAction _moveAction;
     private InputAction _accelerate;
@@ -50,15 +52,20 @@ public class PlayerController : MonoBehaviour
 	void Start()
 	{
 		_rb = GetComponent<Rigidbody2D>();
+        _gameConfiguration = GetComponent<GameConfiguration>();
 		_currentSpeed = _moveSpeed;
-	}
+        _gameConfiguration._maxStageSpeed = 30f;
+    }
 
     void Update()
     {
+        _stageSpeed = _gameConfiguration._maxStageSpeed * _gameConfiguration._stageMutiplier; // Set stage speed based on game configuration
+        _maxSpeed = _stageSpeed*0.8f; // Set max speed from game configuration
+
         var getAccelerate = _accelerate.ReadValue<float>();
-        if (getAccelerate == 1f && _currentSpeed < _maxSpeed)
+        if (getAccelerate == 1f && _currentSpeed < _stageSpeed)
             _moveSpeed += 0.1f;
-        else if(_currentSpeed > _stageSpeed)
+        else if(_currentSpeed > _maxSpeed)
             _moveSpeed -= 0.1f;
 
         _moveX = _moveAction.ReadValue<float>();
@@ -107,6 +114,7 @@ public class PlayerController : MonoBehaviour
         float _targetAngle = Mathf.Atan2(_moveDirection.y, _moveDirection.x) * Mathf.Rad2Deg + 90f;
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
+        // Debugging information
     }
 
 
@@ -126,14 +134,12 @@ public class PlayerController : MonoBehaviour
         _isVulnerable = false;
         _originalMoveSpeed = _moveSpeed; // Store the original speed
         _moveSpeed *= _flightSpeed; // Increase speed for flight
-        Debug.Log($"Is Vulnerable: {_isVulnerable}");
     }
 
     public void Land()
     {
         _moveSpeed = _originalMoveSpeed; // Restore the original speed
         _isVulnerable = true;
-        Debug.Log($"Is Vulnerable: {_isVulnerable}");
     }
 
     public float GetPlayerPoints()
@@ -144,7 +150,6 @@ public class PlayerController : MonoBehaviour
     public void AddPoints(int v)
     {
         _playerPoints += v;
-        Debug.Log($"Player Points: {_playerPoints}");
     }
 
     public bool IsVulnerable()
@@ -156,7 +161,6 @@ public class PlayerController : MonoBehaviour
     {
         _isVulnerable = false;
         _moveSpeed = 0f; // Stop the player
-        Debug.Log("Player has lost!");
         // Additional logic for player losing can be added here (e.g., game over screen)
     }
 

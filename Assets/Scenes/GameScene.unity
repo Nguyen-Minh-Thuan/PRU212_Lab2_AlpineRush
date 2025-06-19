@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 204928830}
   - component: {fileID: 204928833}
   - component: {fileID: 204928834}
+  - component: {fileID: 204928835}
   m_Layer: 3
   m_Name: Square
   m_TagString: Player
@@ -295,12 +296,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52c3835cea84e214cb9ad9c4d3fef8db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 0
-  _turnSpeed: 150
-  _maxSpeed: 170
+  _moveSpeed: 37
+  _turnSpeed: 120
+  _maxSpeed: 0
   _acceleration: 2
   _friction: 0.98
-  _stageSpeed: 500
+  _stageSpeed: 100
   _flightSpeed: 2
   _maxLeanAngle: 30
   _leanSmoothSpeed: 8
@@ -413,6 +414,25 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &204928835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204928828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 377b7ef4ad2f2844caac72321eb87ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxStageSpeed: 100
+  _stageMutiplier: 2
+  _stageTime: 60
+  _stageTimeMultiplier: 1.5
+  _stageSpeedIncrease: 0.5
+  _stageSpeedMultiplier: 1.1
+  _totalMupliers: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,6 +744,7 @@ GameObject:
   - component: {fileID: 1278112259}
   - component: {fileID: 1278112258}
   - component: {fileID: 1278112257}
+  - component: {fileID: 1278112260}
   m_Layer: 6
   m_Name: DeadZone
   m_TagString: Untagged
@@ -740,7 +761,7 @@ Transform:
   m_GameObject: {fileID: 1278112255}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 11.5, z: 0}
+  m_LocalPosition: {x: 1, y: 20, z: 0}
   m_LocalScale: {x: 1000, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -758,7 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87dce1ab66c2a804aa29c83bfda675ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  defaultSpeed: 7
 --- !u!61 &1278112258
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -860,6 +881,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1278112260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278112255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 377b7ef4ad2f2844caac72321eb87ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxStageSpeed: 100
+  _stageMutiplier: 2
+  _stageTime: 60
+  _stageTimeMultiplier: 1.5
+  _stageSpeedIncrease: 0.5
+  _stageSpeedMultiplier: 1.1
+  _totalMupliers: 1
 --- !u!1 &1339117835
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ public class DefaultObstacle : MonoBehaviour
             {
                 playerController.PlayerLose(); // Call the method to handle player losing
             }
-            Debug.Log("Player has collided with an obstacle and lost!");
             Destroy(gameObject); // Destroy the obstacle after scoring
+            Destroy(playerController);
         }
     }
 
