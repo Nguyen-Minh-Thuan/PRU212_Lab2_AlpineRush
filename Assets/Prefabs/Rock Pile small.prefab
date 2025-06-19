@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2069789915883173011}
   - component: {fileID: 6244203919888648690}
   - component: {fileID: 1155227356318272982}
-  - component: {fileID: 5973545217677918425}
-  - component: {fileID: 2077723850056929152}
+  - component: {fileID: -5617841331423322968}
+  - component: {fileID: 8032675069362247466}
   m_Layer: 6
   m_Name: Rock Pile small
   m_TagString: Untagged
@@ -142,7 +142,7 @@ PolygonCollider2D:
       - {x: 0.205, y: -0.099999994}
       - {x: 0.205, y: 0.099999994}
   m_UseDelaunayMesh: 0
---- !u!114 &5973545217677918425
+--- !u!114 &-5617841331423322968
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetAbovePlayer: 10
---- !u!114 &2077723850056929152
+--- !u!114 &8032675069362247466
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,6 +164,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4415657313762968237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f9e21ab63ba7af46889ed31b904d689, type: 3}
+  m_Script: {fileID: 11500000, guid: b897a10cb4af434438c364f603c20438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

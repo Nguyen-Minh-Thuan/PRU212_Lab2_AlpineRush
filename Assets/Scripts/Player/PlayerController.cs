@@ -107,7 +107,6 @@ public class PlayerController : MonoBehaviour
         float _targetAngle = Mathf.Atan2(_moveDirection.y, _moveDirection.x) * Mathf.Rad2Deg + 90f;
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
-        Debug.Log($"{_currentSpeed}");
     }
 
 
@@ -153,7 +152,15 @@ public class PlayerController : MonoBehaviour
         return _isVulnerable;
     }
 
-    
+    public void PlayerLose()
+    {
+        _isVulnerable = false;
+        _moveSpeed = 0f; // Stop the player
+        Debug.Log("Player has lost!");
+        // Additional logic for player losing can be added here (e.g., game over screen)
+    }
+
+
 
 
 }
