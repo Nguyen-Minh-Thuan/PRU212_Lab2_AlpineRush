@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     private InputAction _moveAction;
     private InputAction _accelerate;
 
+    private Animator _animator; // Animator for player animations
+
 	void Awake()
 	{
 		_moveAction = new InputAction(type: InputActionType.Value, binding: "<Gamepad>/leftStick/x");
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour
 		_moveAction.Enable();
         _accelerate = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/space");
         _accelerate.Enable();
+        _animator = GetComponent<Animator>();
     }
 
 	void Start()
@@ -70,8 +73,14 @@ public class PlayerController : MonoBehaviour
 
         _moveX = _moveAction.ReadValue<float>();
 
-        // Calculate turn speed based on current speed (inertia effect)
-        float speedT = (_currentSpeed - _moveSpeed) / (_maxSpeed - _moveSpeed);
+		if (_animator != null)
+		{
+			_animator.SetFloat("MoveX", _moveX);
+			_animator.SetBool("IsAccelerating", getAccelerate == 1f);
+		}
+
+		// Calculate turn speed based on current speed (inertia effect)
+		float speedT = (_currentSpeed - _moveSpeed) / (_maxSpeed - _moveSpeed);
         float _turnSpeedThisFrame = Mathf.Lerp(_maxTurnSpeed, _minTurnSpeed, speedT);
 
         float maxTurnAngle = 60f; // Maximum angle from downward (in degrees)
@@ -159,10 +168,16 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerLose()
     {
-        _isVulnerable = false;
+		if (_animator != null)
+			_animator.SetTrigger("Hit");
+
+		_isVulnerable = false;
         _moveSpeed = 0f; // Stop the player
-        // Additional logic for player losing can be added here (e.g., game over screen)
-    }
+						 // Additional logic for player losing can be added here (e.g., game over screen)
+		_moveAction.Disable();
+		_accelerate.Disable();
+		Debug.Log("Game Over!");
+	}
 
 
 
