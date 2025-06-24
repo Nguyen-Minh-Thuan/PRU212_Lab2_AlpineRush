@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
 
     private Animator _animator; // Animator for player animations
 
+	AudioManager _audioManager;
+	private AudioSource _slidingSource;
+
+
 	void Awake()
 	{
 		_moveAction = new InputAction(type: InputActionType.Value, binding: "<Gamepad>/leftStick/x");
@@ -49,8 +53,19 @@ public class PlayerController : MonoBehaviour
 		_moveAction.Enable();
         _accelerate = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/space");
         _accelerate.Enable();
+
         _animator = GetComponent<Animator>();
-    }
+
+		_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
+		var slidingObj = new GameObject("SlidingAudioSource");
+		slidingObj.transform.parent = this.transform;
+		_slidingSource = slidingObj.AddComponent<AudioSource>();
+		_slidingSource.clip = _audioManager._sliding;
+		_slidingSource.loop = false;
+		_slidingSource.playOnAwake = false;
+		_slidingSource.volume = 0.2f;
+	}
 
 	void Start()
 	{
@@ -60,7 +75,9 @@ public class PlayerController : MonoBehaviour
         _gameConfiguration._maxStageSpeed = 30f;
     }
 
-    void Update()
+	private float _lastMoveX = 0f;
+
+	void Update()
     {
         _stageSpeed = _gameConfiguration._maxStageSpeed * _gameConfiguration._stageMutiplier; // Set stage speed based on game configuration
         _maxSpeed = _stageSpeed*0.8f; // Set max speed from game configuration
@@ -78,6 +95,19 @@ public class PlayerController : MonoBehaviour
 			_animator.SetFloat("MoveX", _moveX);
 			_animator.SetBool("IsAccelerating", getAccelerate == 1f);
 		}
+
+		// Sliding sound: play once when starting to turn
+		if (Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) <= 0.1f)
+		{
+			_slidingSource.Play();
+		}
+		else if (Mathf.Sign(_moveX) != Mathf.Sign(_lastMoveX) && Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) > 0.1f)
+		{
+			// Play sliding sound when changing turn direction
+			_slidingSource.Play();
+		}
+
+		_lastMoveX = _moveX;
 
 		// Calculate turn speed based on current speed (inertia effect)
 		float speedT = (_currentSpeed - _moveSpeed) / (_maxSpeed - _moveSpeed);
