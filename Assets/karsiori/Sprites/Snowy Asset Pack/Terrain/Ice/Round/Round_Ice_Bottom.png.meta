@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Round_Ice_Bottom_0: 4522978280557302651
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
