@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Ice_Inner_Corners_3_0: -5139200549068415571
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

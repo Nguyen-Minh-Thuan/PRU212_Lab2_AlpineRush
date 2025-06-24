@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Snowman_0_0: -1448990748016827539
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
