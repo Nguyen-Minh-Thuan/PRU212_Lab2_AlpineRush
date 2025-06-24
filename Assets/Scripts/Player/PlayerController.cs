@@ -35,6 +35,15 @@ public class PlayerController : MonoBehaviour
 
     private InputAction _moveAction;
     private InputAction _accelerate;
+	private InputAction _stuntAction;
+
+
+	private Animator _animator; // Animator for player animations
+
+	AudioManager _audioManager;
+	private AudioSource _slidingSource;
+
+	[SerializeField] private AudioSource _accelerateSource;
 
 	void Awake()
 	{
@@ -47,7 +56,15 @@ public class PlayerController : MonoBehaviour
 		_moveAction.Enable();
         _accelerate = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/space");
         _accelerate.Enable();
-    }
+
+		_stuntAction = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/q");
+		_stuntAction.Enable();
+
+
+		_animator = GetComponent<Animator>();
+
+		_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+	}
 
 	void Start()
 	{
@@ -57,7 +74,9 @@ public class PlayerController : MonoBehaviour
         _gameConfiguration._maxStageSpeed = 30f;
     }
 
-    void Update()
+	private float _lastMoveX = 0f;
+
+	void Update()
     {
         _stageSpeed = _gameConfiguration._maxStageSpeed * _gameConfiguration._stageMutiplier; // Set stage speed based on game configuration
         _maxSpeed = _stageSpeed*0.8f; // Set max speed from game configuration
@@ -70,8 +89,35 @@ public class PlayerController : MonoBehaviour
 
         _moveX = _moveAction.ReadValue<float>();
 
-        // Calculate turn speed based on current speed (inertia effect)
-        float speedT = (_currentSpeed - _moveSpeed) / (_maxSpeed - _moveSpeed);
+		if (_animator != null)
+		{
+			_animator.SetFloat("MoveX", _moveX);
+			_animator.SetBool("IsAccelerating", getAccelerate == 1f);
+		}
+
+		// Only allow stunt in the air and not already performing a stunt
+		if (_stuntAction.WasPressedThisFrame() && !_isVulnerable)
+		{
+			Debug.Log("Stunt triggered in air");
+			if (_animator != null)
+				_animator.SetTrigger("Stunt");
+		}
+
+
+		// Sliding sound: play once when starting to turn or changing direction
+		if (Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) <= 0.1f)
+		{
+			_audioManager.PlaySFX(_audioManager._sliding);
+		}
+		else if (Mathf.Sign(_moveX) != Mathf.Sign(_lastMoveX) && Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) > 0.1f)
+		{
+			_audioManager.PlaySFX(_audioManager._sliding);
+		}
+
+		_lastMoveX = _moveX;
+
+		// Calculate turn speed based on current speed (inertia effect)
+		float speedT = (_currentSpeed - _moveSpeed) / (_maxSpeed - _moveSpeed);
         float _turnSpeedThisFrame = Mathf.Lerp(_maxTurnSpeed, _minTurnSpeed, speedT);
 
         float maxTurnAngle = 60f; // Maximum angle from downward (in degrees)
@@ -131,16 +177,22 @@ public class PlayerController : MonoBehaviour
 
     public void TakeFlight()
     {
-        _isVulnerable = false;
+		Debug.Log("Player IS FLYING");
+		_isVulnerable = false;
         _originalMoveSpeed = _moveSpeed; // Store the original speed
         _moveSpeed *= _flightSpeed; // Increase speed for flight
-    }
+		if (_animator != null)
+			_animator.SetBool("InAir", true);
+	}
 
     public void Land()
     {
-        _moveSpeed = _originalMoveSpeed; // Restore the original speed
+		Debug.Log("Player Landed");
+		_moveSpeed = _originalMoveSpeed; // Restore the original speed
         _isVulnerable = true;
-    }
+		if (_animator != null)
+			_animator.SetBool("InAir", false);
+	}
 
     public float GetPlayerPoints()
     {
@@ -150,7 +202,9 @@ public class PlayerController : MonoBehaviour
     public void AddPoints(int v)
     {
         _playerPoints += v;
-    }
+		if (_audioManager != null && _audioManager._collects != null)
+			_audioManager.PlaySFX(_audioManager._collects);
+	}
 
     public bool IsVulnerable()
     {
@@ -159,10 +213,23 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerLose()
     {
-        _isVulnerable = false;
+		if (_animator != null)
+			_animator.SetTrigger("Hit");
+
+		_isVulnerable = false;
         _moveSpeed = 0f; // Stop the player
-        // Additional logic for player losing can be added here (e.g., game over screen)
-    }
+						 // Additional logic for player losing can be added here (e.g., game over screen)
+
+		if (_audioManager != null && _audioManager._death != null)
+			_audioManager.PlaySFX(_audioManager._death);
+
+		if (_accelerateSource != null && _accelerateSource.isPlaying)
+			_accelerateSource.Stop();
+
+		_moveAction.Disable();
+		_accelerate.Disable();
+		Debug.Log("Game Over!");
+	}
 
 
 
