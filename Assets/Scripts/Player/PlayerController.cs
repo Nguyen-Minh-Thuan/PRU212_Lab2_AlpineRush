@@ -35,12 +35,15 @@ public class PlayerController : MonoBehaviour
 
     private InputAction _moveAction;
     private InputAction _accelerate;
+	private InputAction _stuntAction;
 
-    private Animator _animator; // Animator for player animations
+
+	private Animator _animator; // Animator for player animations
 
 	AudioManager _audioManager;
 	private AudioSource _slidingSource;
 
+	[SerializeField] private AudioSource _accelerateSource;
 
 	void Awake()
 	{
@@ -54,17 +57,13 @@ public class PlayerController : MonoBehaviour
         _accelerate = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/space");
         _accelerate.Enable();
 
-        _animator = GetComponent<Animator>();
+		_stuntAction = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/q");
+		_stuntAction.Enable();
+
+
+		_animator = GetComponent<Animator>();
 
 		_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-
-		var slidingObj = new GameObject("SlidingAudioSource");
-		slidingObj.transform.parent = this.transform;
-		_slidingSource = slidingObj.AddComponent<AudioSource>();
-		_slidingSource.clip = _audioManager._sliding;
-		_slidingSource.loop = false;
-		_slidingSource.playOnAwake = false;
-		_slidingSource.volume = 0.2f;
 	}
 
 	void Start()
@@ -96,15 +95,23 @@ public class PlayerController : MonoBehaviour
 			_animator.SetBool("IsAccelerating", getAccelerate == 1f);
 		}
 
-		// Sliding sound: play once when starting to turn
+		// Only allow stunt in the air and not already performing a stunt
+		if (_stuntAction.WasPressedThisFrame() && !_isVulnerable)
+		{
+			Debug.Log("Stunt triggered in air");
+			if (_animator != null)
+				_animator.SetTrigger("Stunt");
+		}
+
+
+		// Sliding sound: play once when starting to turn or changing direction
 		if (Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) <= 0.1f)
 		{
-			_slidingSource.Play();
+			_audioManager.PlaySFX(_audioManager._sliding);
 		}
 		else if (Mathf.Sign(_moveX) != Mathf.Sign(_lastMoveX) && Mathf.Abs(_moveX) > 0.1f && Mathf.Abs(_lastMoveX) > 0.1f)
 		{
-			// Play sliding sound when changing turn direction
-			_slidingSource.Play();
+			_audioManager.PlaySFX(_audioManager._sliding);
 		}
 
 		_lastMoveX = _moveX;
@@ -170,16 +177,22 @@ public class PlayerController : MonoBehaviour
 
     public void TakeFlight()
     {
-        _isVulnerable = false;
+		Debug.Log("Player IS FLYING");
+		_isVulnerable = false;
         _originalMoveSpeed = _moveSpeed; // Store the original speed
         _moveSpeed *= _flightSpeed; // Increase speed for flight
-    }
+		if (_animator != null)
+			_animator.SetBool("InAir", true);
+	}
 
     public void Land()
     {
-        _moveSpeed = _originalMoveSpeed; // Restore the original speed
+		Debug.Log("Player Landed");
+		_moveSpeed = _originalMoveSpeed; // Restore the original speed
         _isVulnerable = true;
-    }
+		if (_animator != null)
+			_animator.SetBool("InAir", false);
+	}
 
     public float GetPlayerPoints()
     {
@@ -189,7 +202,9 @@ public class PlayerController : MonoBehaviour
     public void AddPoints(int v)
     {
         _playerPoints += v;
-    }
+		if (_audioManager != null && _audioManager._collects != null)
+			_audioManager.PlaySFX(_audioManager._collects);
+	}
 
     public bool IsVulnerable()
     {
@@ -204,6 +219,13 @@ public class PlayerController : MonoBehaviour
 		_isVulnerable = false;
         _moveSpeed = 0f; // Stop the player
 						 // Additional logic for player losing can be added here (e.g., game over screen)
+
+		if (_audioManager != null && _audioManager._death != null)
+			_audioManager.PlaySFX(_audioManager._death);
+
+		if (_accelerateSource != null && _accelerateSource.isPlaying)
+			_accelerateSource.Stop();
+
 		_moveAction.Disable();
 		_accelerate.Disable();
 		Debug.Log("Game Over!");

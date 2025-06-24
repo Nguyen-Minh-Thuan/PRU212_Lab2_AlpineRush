@@ -9,11 +9,11 @@ public class AudioManager : MonoBehaviour
 
 	[Header("Audio Clip")]
 	public AudioClip _background;
-	//public AudioClip _death;
+	public AudioClip _death;
 	public AudioClip _accelerate;
 	public AudioClip _sliding;
 	//public AudioClip _stunts;
-	//public AudioClip _collects;
+	public AudioClip _collects;
 
 	private void Start()
 	{
