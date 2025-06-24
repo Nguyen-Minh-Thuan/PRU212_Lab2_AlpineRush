@@ -11,11 +11,12 @@ public class ScoringObstacle : MonoBehaviour
             PlayerController playerController = other.GetComponent<PlayerController>();
             if (playerController != null)
             {
-                playerController.AddPoints(10); // Add 10 points for hitting this obstacle
+                playerController.AddPoints(100); // Add 10 points for hitting this obstacle
             }
             Destroy(gameObject); // Destroy the obstacle after scoring
         }
     }
+
 
 
 

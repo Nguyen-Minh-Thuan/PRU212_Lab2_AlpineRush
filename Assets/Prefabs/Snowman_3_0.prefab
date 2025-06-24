@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7206252980345933512}
   - component: {fileID: 7622950782261215445}
   - component: {fileID: 5051837378847049105}
-  - component: {fileID: 3855210534377323011}
   - component: {fileID: 4052575767738202667}
+  - component: {fileID: -4044492291059318497}
   m_Layer: 0
   m_Name: Snowman_3_0
   m_TagString: Untagged
@@ -103,19 +103,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetAbovePlayer: 10
---- !u!114 &3855210534377323011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8328478151568872617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aadb4f0b4b182e740811edbca10bea89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slowPercent: 0.1
 --- !u!70 &4052575767738202667
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -153,3 +140,16 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.30000004, y: 0.45999998}
   m_Direction: 0
+--- !u!114 &-4044492291059318497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8328478151568872617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aadb4f0b4b182e740811edbca10bea89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowPercent: 0.5

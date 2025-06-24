@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public float _acceleration = 2f;
 	public float _friction = 0.98f;
     public float _stageSpeed = 100f;
-    public float _flightSpeed = 2f;
+    public float _flightSpeed = 5f;
     private float _originalMoveSpeed;
 
     [Header("Leaning Settings")]
@@ -93,12 +93,11 @@ public class PlayerController : MonoBehaviour
 		{
 			_animator.SetFloat("MoveX", _moveX);
 			_animator.SetBool("IsAccelerating", getAccelerate == 1f);
-		}
+        }
 
 		// Only allow stunt in the air and not already performing a stunt
 		if (_stuntAction.WasPressedThisFrame() && !_isVulnerable)
 		{
-			Debug.Log("Stunt triggered in air");
 			if (_animator != null)
 				_animator.SetTrigger("Stunt");
 		}
@@ -161,6 +160,8 @@ public class PlayerController : MonoBehaviour
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
         // Debugging information
+
+        _playerPoints += 0.1f;
     }
 
 
@@ -172,22 +173,23 @@ public class PlayerController : MonoBehaviour
 
     public void SlowDown(float slowPercent)
     {
-        _moveSpeed *= (1f - slowPercent);
+        _moveSpeed *= slowPercent;
     }
 
     public void TakeFlight()
     {
-		Debug.Log("Player IS FLYING");
-		_isVulnerable = false;
+        Debug.Log("Taking flight!");
+        _isVulnerable = false;
         _originalMoveSpeed = _moveSpeed; // Store the original speed
-        _moveSpeed *= _flightSpeed; // Increase speed for flight
-		if (_animator != null)
+        Debug.Log($"Original move speed: {_originalMoveSpeed}");
+        _moveSpeed *= 1 + _flightSpeed; // Increase speed for flight
+        Debug.Log($"Flight speed set to: {_moveSpeed}");
+        if (_animator != null)
 			_animator.SetBool("InAir", true);
 	}
 
     public void Land()
     {
-		Debug.Log("Player Landed");
 		_moveSpeed = _originalMoveSpeed; // Restore the original speed
         _isVulnerable = true;
 		if (_animator != null)
@@ -199,7 +201,7 @@ public class PlayerController : MonoBehaviour
         return _playerPoints;
     }
 
-    public void AddPoints(int v)
+    public void AddPoints(float v)
     {
         _playerPoints += v;
 		if (_audioManager != null && _audioManager._collects != null)
