@@ -45,6 +45,13 @@ public class PlayerController : MonoBehaviour
 
 	[SerializeField] private AudioSource _accelerateSource;
 
+	[Header("Stunt settings")]
+	private int _stuntCombo = 0;
+	private const int _stuntBasePoints = 5;
+	private const int _stuntMaxMultiplier = 8;
+
+	private GameOverUI _gameOverUI;
+
 	void Awake()
 	{
 		_moveAction = new InputAction(type: InputActionType.Value, binding: "<Gamepad>/leftStick/x");
@@ -64,6 +71,8 @@ public class PlayerController : MonoBehaviour
 		_animator = GetComponent<Animator>();
 
 		_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
+		_gameOverUI = FindFirstObjectByType<GameOverUI>();
 	}
 
 	void Start()
@@ -101,6 +110,15 @@ public class PlayerController : MonoBehaviour
 			Debug.Log("Stunt triggered in air");
 			if (_animator != null)
 				_animator.SetTrigger("Stunt");
+
+			// Calculate multiplier: 1, 2, 4, 8 (max)
+			int multiplier = Mathf.Min(1 << _stuntCombo, _stuntMaxMultiplier);
+			int points = _stuntBasePoints * multiplier;
+			AddPoints(points);
+
+			// Increase combo for next stunt, up to max multiplier
+			if (multiplier < _stuntMaxMultiplier)
+				_stuntCombo++;
 		}
 
 
@@ -192,6 +210,8 @@ public class PlayerController : MonoBehaviour
         _isVulnerable = true;
 		if (_animator != null)
 			_animator.SetBool("InAir", false);
+
+		_stuntCombo = 0;
 	}
 
     public float GetPlayerPoints()
@@ -228,6 +248,8 @@ public class PlayerController : MonoBehaviour
 
 		_moveAction.Disable();
 		_accelerate.Disable();
+		if (_gameOverUI != null)
+			_gameOverUI.ShowGameOver();
 		Debug.Log("Game Over!");
 	}
 

@@ -14,6 +14,8 @@ public class AudioManager : MonoBehaviour
 	public AudioClip _sliding;
 	//public AudioClip _stunts;
 	public AudioClip _collects;
+	public AudioClip _mainMenuMusic;
+
 
 	private void Start()
 	{
@@ -25,4 +27,13 @@ public class AudioManager : MonoBehaviour
 	{
 			_sfxSource.PlayOneShot(clip);
 	}
+
+	public void PlayMusic(AudioClip clip)
+	{
+		if (_musicSource.clip == clip) return; // Prevent restarting same music
+		_musicSource.Stop();
+		_musicSource.clip = clip;
+		_musicSource.Play();
+	}
+
 }

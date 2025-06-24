@@ -30,6 +30,7 @@ public class TakeFlightObstacle : MonoBehaviour
         yield return new WaitForSeconds(_flightDuration);
 		Debug.Log("Calling Land()");
 		playerController.Land();
-    }
+		Destroy(gameObject);
+	}
 
 }
