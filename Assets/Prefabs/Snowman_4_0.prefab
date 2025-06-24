@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2252576027603069778}
   - component: {fileID: 8165174790402737760}
   - component: {fileID: 8622745368380984678}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Snowman_4_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aadb4f0b4b182e740811edbca10bea89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slowPercent: 0.1
+  slowPercent: 0.5
 --- !u!114 &8622745368380984678
 MonoBehaviour:
   m_ObjectHideFlags: 0

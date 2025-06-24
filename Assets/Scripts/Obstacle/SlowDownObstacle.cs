@@ -3,7 +3,7 @@
 public class SlowDownObstacle : MonoBehaviour
 {
 
-    public float slowPercent = 0.5f;
+    public float slowPercent = 0.8f;
 
     void OnTriggerEnter2D(Collider2D other)
     {

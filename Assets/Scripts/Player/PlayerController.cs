@@ -179,7 +179,7 @@ public class PlayerController : MonoBehaviour
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
         // Debugging information
-        _playerPoints += 0.1f;
+        //_playerPoints += 0.1f;
     }
 
 
