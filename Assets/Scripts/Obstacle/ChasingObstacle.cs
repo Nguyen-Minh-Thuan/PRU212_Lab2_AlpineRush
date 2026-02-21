@@ -36,6 +36,7 @@ public class ChasingObstacle : MonoBehaviour
             }
             //Debug.Log("Player has collided with an obstacle and lost!");
             speed = 0; // Stop the obstacle from moving
+            defaultSpeed = 0;
         }
     }
 

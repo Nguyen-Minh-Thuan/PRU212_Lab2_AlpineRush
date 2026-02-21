@@ -179,6 +179,7 @@ public class PlayerController : MonoBehaviour
         float _leanAngle = -_moveX * _maxLeanAngle;
         transform.rotation = Quaternion.Euler(0f, 0f, _targetAngle + _leanAngle);
         // Debugging information
+        _playerPoints += 0.1f;
     }
 
 
@@ -190,12 +191,11 @@ public class PlayerController : MonoBehaviour
 
     public void SlowDown(float slowPercent)
     {
-        _moveSpeed *= (1f - slowPercent);
+        _moveSpeed *= slowPercent;
     }
 
     public void TakeFlight()
     {
-		Debug.Log("Player IS FLYING");
 		_isVulnerable = false;
         _originalMoveSpeed = _moveSpeed; // Store the original speed
         _moveSpeed *= _flightSpeed; // Increase speed for flight
@@ -205,7 +205,6 @@ public class PlayerController : MonoBehaviour
 
     public void Land()
     {
-		Debug.Log("Player Landed");
 		_moveSpeed = _originalMoveSpeed; // Restore the original speed
         _isVulnerable = true;
 		if (_animator != null)

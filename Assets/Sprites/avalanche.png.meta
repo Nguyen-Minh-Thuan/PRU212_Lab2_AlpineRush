@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      avalanche_0: -3381599580317248017
+      avalanche_1: -8811422706291337234
+      avalanche_2: 3078305177860686710
+      avalanche_3: 2937314003465001669
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
